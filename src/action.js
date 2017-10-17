@@ -17,7 +17,7 @@ export default class action {
         if (!lst || lst.size == 0)
             return false
 
-        return lst.every(o => o.get(this.option.selectFiledName))
+        return lst.every(o => o.get(this.option.selectFieldName))
     }
 
     selectAll = (e) => {
@@ -30,7 +30,7 @@ export default class action {
         if (!lst || lst.size == 0)
             return 0
 
-        var ret = lst.filter(o => !!o.get(this.option.selectFiledName)).size
+        var ret = lst.filter(o => !!o.get(this.option.selectFieldName)).size
 
         return ret
     }

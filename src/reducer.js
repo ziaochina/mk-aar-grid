@@ -14,7 +14,7 @@ export default  class reducer {
             return state
 
         for (let i = 0; i < lst.size; i++) {
-            state = this.metaReducer.sf(state, `${this.option.listPath}.${i}.${this.option.selectFiledName}`, checked)
+            state = this.metaReducer.sf(state, `${this.option.listPath}.${i}.${this.option.selectFieldName}`, checked)
         }
 
         return state
