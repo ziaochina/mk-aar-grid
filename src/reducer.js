@@ -1,3 +1,5 @@
+import {Map} from 'immutable'
+
 export default  class reducer {
     constructor(option) {
         this.metaReducer = option.metaReducer

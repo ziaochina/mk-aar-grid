@@ -1,6 +1,6 @@
 {
   "name": "mk-aar-grid",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "./lib/index.js",
   "scripts": {
@@ -29,6 +29,7 @@
     "cross-env": "^5.1.0"
   },
   "dependencies": {
+    "immutable": "^3.8.2",
     "mk-utils": "^1.0.47"
   }
 }

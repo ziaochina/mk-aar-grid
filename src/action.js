@@ -17,6 +17,10 @@ export default class action {
         if (!this.option)
             return
 
+        if(!( typeof gridName == 'string' && gridName)){
+            gridName = Object.keys(this.option)[0]
+        }
+
         const lst = this.metaAction.gf(this.option[gridName].path)
         if (!lst || lst.size == 0)
             return false
@@ -28,12 +32,22 @@ export default class action {
         if (!this.option)
             return
 
+
+        if(!( typeof gridName == 'string' && gridName)){
+            gridName = Object.keys(this.option)[0]
+        }
+
         this.injections.reduce('selectAll', e.target.checked, gridName)
     }
 
     getSelectedCount = (gridName) => {
         if (!this.option)
             return
+
+
+        if(!( typeof gridName == 'string' && gridName)){
+            gridName = Object.keys(this.option)[0]
+        }
 
         var lst = this.metaAction.gf(this.option[gridName].path)
 
@@ -118,9 +132,9 @@ export default class action {
             return false
         }
 
-        const girdNames = Object.keys(this.option)
+        const gridNames = Object.keys(this.option)
 
-        for (var name in gridNames) {
+        for (var name of gridNames) {
             if (path.indexOf(name) != -1 && this.option[name].isReadOnly) {
                 isReadOnly = this.option[name].isReadOnly
             }
@@ -135,18 +149,22 @@ export default class action {
     }
 
     focusCell(position, path) {
-        const girdNames = Object.keys(this.option)
-
-        for (var name in gridNames) {
+        const gridNames = Object.keys(this.option)
+        for (var name of gridNames) {
             if (path.indexOf(name) != -1) {
+                let colPathPrefix = this.getColPathPrefix(path, name)
                 this.metaAction.sfs({
-                    'data.other.focusFieldPath': `${this.option[name].colPathPrefix}.${this.option[name].columnsNames[position.x]}.cell.cell,${position.y}`,
-                    'data.other.unitGridScrollToRow': position.y,
-                    'data.other.unitGridScrollToColumn': position.x + 1
+                    'data.other.focusFieldPath': `${colPathPrefix}${this.option[name].colNames[position.x]}.cell.cell,${position.y}`,
+                    [`data.other.${name}ScrollToRow`]: position.y,
+                    [`data.other.${name}ScrollToColumn`]: position.x + 1
                 })
             }
         }
         setTimeout(this.cellAutoFocus, 16)
+    }
+
+    getColPathPrefix(path, gridName){
+        return path.substring(0, path.indexOf(gridName)) + gridName + '.columns.'
     }
 
     getCellInfo(path) {
@@ -154,14 +172,15 @@ export default class action {
             return
 
         const parsedPath = utils.path.parsePath(path)
-        const girdNames = Object.keys(this.option)
+        const gridNames = Object.keys(this.option)
 
-        for (var name in gridNames) {
+        for (var name of gridNames) {
             if (path.indexOf(name) != -1) {
+                let colPathPrefix = this.getColPathPrefix(path, name)
                 const rowCount = this.metaAction.gf(this.option[name].path).size
                 const colCount = this.option[name].colCount
                 var colName = parsedPath.path
-                    .replace(this.option[name].colPathPrefix, '')
+                    .replace(colPathPrefix, '')
                     .replace('.cell.cell', '')
                     .replace(/\s/g, '')
 
@@ -180,9 +199,15 @@ export default class action {
         utils.dom.gridCellAutoFocus(this.component, '.editable-cell')
     }
 
-    getCellClassName = (gridName, path, align) => {
+    getCellClassName = (path, align, gridName) => {
+        if (!this.option)
+            return
 
-        const defaultClsName = this.option[gridName].className
+        if(!( typeof gridName == 'string' && gridName)){
+            gridName = Object.keys(this.option)[0]
+        }
+
+        const defaultClsName = this.option[gridName].cellClassName
 
         var clsName = this.metaAction.isFocus(path) ? `${defaultClsName} editable-cell` : ''
 
