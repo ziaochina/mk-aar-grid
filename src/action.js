@@ -122,7 +122,7 @@ export default class action {
     }
 
     moveCell(cellInfo, action, path) {
-        var isReadOnly = (cellPosition, path) => {
+        var cellIsReadonly = (cellPosition, path, getField) => {
             /*
             if (path.indexOf('unitGrid') != -1) {
                 if (cellPosition.x == 2) {
@@ -135,13 +135,13 @@ export default class action {
         const gridNames = Object.keys(this.option)
 
         for (var name of gridNames) {
-            if (path.indexOf(name) != -1 && this.option[name].isReadOnly) {
-                isReadOnly = this.option[name].isReadOnly
+            if (path.indexOf(name) != -1 && this.option[name].cellIsReadonly) {
+                cellIsReadonly = this.option[name].cellIsReadonly
             }
         }
 
         const position = utils.matrix.move(cellInfo.rowCount, cellInfo.colCount, { x: cellInfo.x, y: cellInfo.y }, action)
-        if (isReadOnly(position, path)) {
+        if (cellIsReadonly(position, path, this.metaAction.gf)) {
             this.moveCell(position, action, path)
         } else {
             this.focusCell(position, path)
