@@ -7,10 +7,14 @@ export default class action {
             this.option = option.gridOption
         }
     }
-
+    
     onInit = ({ component, injections }) => {
         this.component = component
         this.injections = injections
+    }
+    
+    getColNames(gridName){
+        return this.option[gridName].getColNames(this.metaAction.gf)
     }
 
     isSelectAll = (gridName) => {
@@ -141,10 +145,14 @@ export default class action {
         }
 
         const position = utils.matrix.move(cellInfo.rowCount, cellInfo.colCount, { x: cellInfo.x, y: cellInfo.y }, action)
+
+        if(position.x === cellInfo.x && position.y === cellInfo.y){
+            return
+        }
         if (cellIsReadonly(position, path, this.metaAction.gf)) {
-            this.moveCell(position, action, path)
+            this.moveCell({...cellInfo, ...position}, action, path)
         } else {
-            this.focusCell(position, path)
+            this.focusCell({...cellInfo, ...position}, path)
         }
     }
 
@@ -154,7 +162,7 @@ export default class action {
             if (path.indexOf(name) != -1) {
                 let colPathPrefix = this.getColPathPrefix(path, name)
                 this.metaAction.sfs({
-                    'data.other.focusFieldPath': `${colPathPrefix}${this.option[name].colNames[position.x]}.cell.cell,${position.y}`,
+                    'data.other.focusFieldPath': `${colPathPrefix}${this.getColNames(name)[position.x]}.cell.cell,${position.y}`,
                     [`data.other.${name}ScrollToRow`]: position.y,
                     [`data.other.${name}ScrollToColumn`]: position.x + 1
                 })
@@ -178,14 +186,14 @@ export default class action {
             if (path.indexOf(name) != -1) {
                 let colPathPrefix = this.getColPathPrefix(path, name)
                 const rowCount = this.metaAction.gf(this.option[name].path).size
-                const colCount = this.option[name].colCount
+                const colCount = this.getColNames(name).length
                 var colName = parsedPath.path
                     .replace(colPathPrefix, '')
                     .replace('.cell.cell', '')
                     .replace(/\s/g, '')
 
                 return {
-                    x: this.option[name].colNames.findIndex(o => o == colName),
+                    x: this.getColNames(name).findIndex(o => o == colName),
                     y: Number(parsedPath.vars[0]),
                     colCount,
                     rowCount,
