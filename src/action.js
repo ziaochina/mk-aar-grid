@@ -1,4 +1,5 @@
 import utils from 'mk-utils'
+import ReactDOM from 'react-dom'
 
 export default class action {
     constructor(option) {
@@ -7,13 +8,13 @@ export default class action {
             this.option = option.gridOption
         }
     }
-    
+
     onInit = ({ component, injections }) => {
         this.component = component
         this.injections = injections
     }
-    
-    getColNames(gridName){
+
+    getColNames(gridName) {
         return this.option[gridName].getColNames(this.metaAction.gf)
     }
 
@@ -21,7 +22,7 @@ export default class action {
         if (!this.option)
             return
 
-        if(!( typeof gridName == 'string' && gridName)){
+        if (!(typeof gridName == 'string' && gridName)) {
             gridName = Object.keys(this.option)[0]
         }
 
@@ -37,7 +38,7 @@ export default class action {
             return
 
 
-        if(!( typeof gridName == 'string' && gridName)){
+        if (!(typeof gridName == 'string' && gridName)) {
             gridName = Object.keys(this.option)[0]
         }
 
@@ -49,7 +50,7 @@ export default class action {
             return
 
 
-        if(!( typeof gridName == 'string' && gridName)){
+        if (!(typeof gridName == 'string' && gridName)) {
             gridName = Object.keys(this.option)[0]
         }
 
@@ -146,13 +147,13 @@ export default class action {
 
         const position = utils.matrix.move(cellInfo.rowCount, cellInfo.colCount, { x: cellInfo.x, y: cellInfo.y }, action)
 
-        if(position.x === cellInfo.x && position.y === cellInfo.y){
+        if (position.x === cellInfo.x && position.y === cellInfo.y) {
             return
         }
         if (cellIsReadonly(position, path, this.metaAction.gf)) {
-            this.moveCell({...cellInfo, ...position}, action, path)
+            this.moveCell({ ...cellInfo, ...position }, action, path)
         } else {
-            this.focusCell({...cellInfo, ...position}, path)
+            this.focusCell({ ...cellInfo, ...position }, path)
         }
     }
 
@@ -171,7 +172,7 @@ export default class action {
         setTimeout(this.cellAutoFocus, 16)
     }
 
-    getColPathPrefix(path, gridName){
+    getColPathPrefix(path, gridName) {
         return path.substring(0, path.indexOf(gridName)) + gridName + '.columns.'
     }
 
@@ -211,7 +212,7 @@ export default class action {
         if (!this.option)
             return
 
-        if(!( typeof gridName == 'string' && gridName)){
+        if (!(typeof gridName == 'string' && gridName)) {
             gridName = Object.keys(this.option)[0]
         }
 
@@ -223,6 +224,17 @@ export default class action {
             clsName += ` ${defaultClsName}-${align}`
         }
         return clsName
+    }
+
+    dateOpenChange = (status) => {
+        if (status) return
+        const editorDOM = ReactDOM.findDOMNode(this.component).querySelector(".editable-cell")
+        if (!editorDOM) return
+
+        if (editorDOM.className.indexOf('datepicker') != -1) {
+            const input = editorDOM.querySelector('input')
+            input.focus()
+        }
     }
 
     addRow = (gridName) => (ps) => {
