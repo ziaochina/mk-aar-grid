@@ -219,8 +219,8 @@ export default class action {
         const defaultClsName = this.option[gridName].cellClassName
 
         var clsName = this.metaAction.isFocus(path) ? `${defaultClsName} editable-cell` : ''
-
-        if (align) {
+        
+        if (!this.metaAction.isFocus(path) && align) {
             clsName += ` ${defaultClsName}-${align}`
         }
         return clsName
@@ -243,5 +243,9 @@ export default class action {
 
     delRow = (gridName) => (ps) => {
         this.injections.reduce('delRow', gridName, ps.rowIndex)
+    }
+
+    cellChange = (gridName, rowIndex, columnName, v) => {
+        this.injections.reduce('cellChange', gridName, rowIndex, columnName, v)
     }
 }
