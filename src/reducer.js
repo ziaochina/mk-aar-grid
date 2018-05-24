@@ -63,8 +63,11 @@ export default  class reducer {
         const path = this.option[gridName].path
         state = this.metaReducer.sf(state, `${path}.${rowIndex}.${columnName}`, value)
         var lst = this.metaReducer.gf(state, path)
+        
         if (rowIndex == lst.size - 1) {
-            lst = lst.insert(rowIndex + 1, Map(this.option[gridName].emptyRow || {}))
+            if( !this.option[gridName].fixed ){
+                lst = lst.insert(rowIndex + 1, Map(this.option[gridName].emptyRow || {}))
+            }
         }
         return this.metaReducer.sf(state, path, lst)
     }
