@@ -1,4 +1,5 @@
 import utils from 'mk-utils'
+import {fromJS} from 'immutable'
 import ReactDOM from 'react-dom'
 
 export default class action {
@@ -247,5 +248,13 @@ export default class action {
 
     cellChange = (gridName, rowIndex, columnName, v) => {
         this.injections.reduce('cellChange', gridName, rowIndex, columnName, v)
+    }
+
+    onColumnResizeEndCallback = (gridName, data) => (newColumnWidth, columnKey) => {
+        var columnWidths = data.other[`${gridName}ColumnWidths`] || {}
+        this.metaAction.sf(`data.other.${gridName}ColumnWidths`, fromJS({
+            ...columnWidths,
+            [columnKey]: newColumnWidth
+        }))
     }
 }
